@@ -1,0 +1,40 @@
+* {
+  box-sizing: border-box;
+}
+
+.grid-wrapper {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
+  justify-content: center;
+  height: 600px;
+  width: 600px;
+}
+
+.grid div {
+  border: 1px solid lightgrey;
+  flex-grow: 1;
+  height: 5%;
+  width: 5%;
+}
+
+.grid div.pika {
+  background-image: url('../assets/tube-sprite.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.grid div.missile {
+  background-image: url('../assets/laser-sprite.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
