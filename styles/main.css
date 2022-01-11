@@ -34,7 +34,7 @@
 }
 
 .grid div.missile {
-  background-image: url('../assets/laser-sprite.png');
+  background-image: url('../assets/mario-sprite.png');
   background-repeat: no-repeat;
   background-size: contain;
 }

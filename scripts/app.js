@@ -57,7 +57,7 @@ function init() {
     } else if (event.keyCode == 40) {
       velocity = 0;
     }
-    console.log(velocity);
+    // console.log(velocity);
   }
 
   // Moving Pika
@@ -90,20 +90,62 @@ function init() {
   // Pika shoots
   function pikaShoots(event) {
     if (shootThisTurn == 1) {
-      // shoot
-      bullets[currentBullet] = pikaPosition-20;
-      console.log(bullets[currentBullet]);
-      // cells[(pikaPosition-20)].classList.add("missile");
-      cells[bullets[currentBullet]].classList.add("missile");
+      // check bullets remaining
       if (currentBullet < 9) {
-        currentBullet++;
+        if (bullets[(currentBullet+1)] == 400) {
+          console.log("Able to shoot");
+
+          // shoot
+          bullets[currentBullet] = pikaPosition-20;
+          console.log(`bullet fired to ${bullets[currentBullet]}`);
+          // cells[(pikaPosition-20)].classList.add("missile");
+          cells[bullets[currentBullet]].classList.add("missile");
+          console.log(`number ${currentBullet} bullet fired`);
+
+          currentBullet++;
+          shootThisTurn = 0;
+        }
       } else {
-        currentBullet = 0;
+        if (bullets[0] == 400) {
+          console.log("Able to shoot");
+
+          // shoot
+          bullets[currentBullet] = pikaPosition-20;
+          console.log(`bullet fired to ${bullets[currentBullet]}`);
+          // cells[(pikaPosition-20)].classList.add("missile");
+          cells[bullets[currentBullet]].classList.add("missile");
+          console.log(`number ${currentBullet} bullet fired`);
+
+          currentBullet = 0;
+          shootThisTurn = 0;
+        }
       }
-      console.log(currentBullet);
     }
-    shootThisTurn = 0;
   }
+
+    // Old shooter code, check then delete:
+
+    // // Pika shoots
+    // function pikaShoots(event) {
+    //   if (shootThisTurn == 1) {
+    //     // shoot
+    //     // check bullets remaining
+    //     if (bullets[(currentBullet+1)] == 400) {
+    //       console.log("Able to shoot");
+    //     }
+    //     bullets[currentBullet] = pikaPosition-20;
+    //     console.log(`bullet fired to ${bullets[currentBullet]}`);
+    //     // cells[(pikaPosition-20)].classList.add("missile");
+    //     cells[bullets[currentBullet]].classList.add("missile");
+    //     if (currentBullet < 9) {
+    //       currentBullet++;
+    //     } else {
+    //       currentBullet = 0;
+    //     }
+    //     console.log(`number ${currentBullet} bullet fired`);
+    //   }
+    //   shootThisTurn = 0;
+    // }
 
   // Move bullet
   function updateLocation(item, index, arr) {
@@ -117,10 +159,7 @@ function init() {
       arr[index] = item - 20;
       cells[(item-20)].classList.add("missile");
     }
-    console.log(item);
-    cells[8].classList.add("missile");
-    cells[370].classList.remove("missile");
-    /////////////////////////////// Why does this only work with a number, and we can't use 'item'?
+    console.log(`Bullets at ${item}`);
   }
   // Itterate over bullets
   function bulletsMove() {
@@ -135,7 +174,7 @@ function init() {
   // Actions for each interval
   function nextInterval() {
     // all functions needed for each time interval
-    console.log("working");
+    // console.log("working");
     bulletsMove();
     pikaShoots();
     movePika();
@@ -167,3 +206,6 @@ document.addEventListener('DOMContentLoaded', init)
 
 // TO-DO
 // - change bullet and pika sprites
+// - create logic to stop creating more bullets after 10
+
+// - create notification that no more bullets are left
