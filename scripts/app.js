@@ -1,5 +1,10 @@
 function init() {
 
+  // Sound
+
+  // var audio = document.querySelector(audio);
+  // audio.play();
+
   //VARIABLES
 
   // DOM
@@ -9,7 +14,7 @@ function init() {
   const cells = [];
 
   // changing variables
-  let pikaPosition = 390;
+  let tubePosition = 390;
   const bullets = [
     400,
     400,
@@ -41,8 +46,16 @@ function init() {
   }
   createGrid();
 
-  // Position Pika
-  cells[pikaPosition].classList.add("pika");
+  // Position tube
+  cells[tubePosition].classList.add("tube");
+
+  // Position Aliens
+  function createEnemies() {
+    for (let i=0; i<(width); i++) {
+      cells[i].classList.add("goomba");
+    }
+  }
+  createEnemies();
 
   // RECURRING FUNCTIONS
 
@@ -60,22 +73,22 @@ function init() {
     // console.log(velocity);
   }
 
-  // Moving Pika
-  function movePika() {
+  // Moving Tube
+  function moveTube() {
     
     if (velocity == -1) {
       // move left
-      if (pikaPosition % 20 !== 0) {
-        cells[pikaPosition].classList.remove("pika");
-        pikaPosition -= 1;
-        cells[pikaPosition].classList.add("pika");
+      if (tubePosition % 20 !== 0) {
+        cells[tubePosition].classList.remove("tube");
+        tubePosition -= 1;
+        cells[tubePosition].classList.add("tube");
       }
     } else if (velocity == 1) {
       // move right
-      if (pikaPosition % 20 !== 19) {
-        cells[pikaPosition].classList.remove("pika");
-        pikaPosition += 1;
-        cells[pikaPosition].classList.add("pika");
+      if (tubePosition % 20 !== 19) {
+        cells[tubePosition].classList.remove("tube");
+        tubePosition += 1;
+        cells[tubePosition].classList.add("tube");
       }
     }
   }
@@ -87,55 +100,54 @@ function init() {
     }
   }
 
-  // Pika shoots
-  function pikaShoots(event) {
+  // Tube shoots a Mario
+  function tubeShoots(event) {
     if (shootThisTurn == 1) {
       // check bullets remaining
       if (currentBullet < 9) {
-        if (bullets[(currentBullet+1)] == 400) {
-          console.log("Able to shoot");
+        if (bullets[currentBullet] == 400) {
+          // console.log("Able to shoot");
 
           // shoot
-          bullets[currentBullet] = pikaPosition-20;
-          console.log(`bullet fired to ${bullets[currentBullet]}`);
-          // cells[(pikaPosition-20)].classList.add("missile");
+          bullets[currentBullet] = tubePosition-20;
+          // console.log(`bullet fired to ${bullets[currentBullet]}`);
+          // cells[(tubePosition-20)].classList.add("missile");
           cells[bullets[currentBullet]].classList.add("missile");
-          console.log(`number ${currentBullet} bullet fired`);
+          console.log(`number ${currentBullet} bullet fired to ${bullets[currentBullet]}`);
 
           currentBullet++;
-          shootThisTurn = 0;
         }
       } else {
-        if (bullets[0] == 400) {
-          console.log("Able to shoot");
+        if (bullets[currentBullet] == 400) {
+          // console.log("Able to shoot");
 
           // shoot
-          bullets[currentBullet] = pikaPosition-20;
+          bullets[currentBullet] = tubePosition-20;
           console.log(`bullet fired to ${bullets[currentBullet]}`);
-          // cells[(pikaPosition-20)].classList.add("missile");
+          // cells[(tubePosition-20)].classList.add("missile");
           cells[bullets[currentBullet]].classList.add("missile");
-          console.log(`number ${currentBullet} bullet fired`);
-
+          console.log(`number ${currentBullet} bullet fired to ${bullets[currentBullet]}`);
+          
           currentBullet = 0;
-          shootThisTurn = 0;
         }
       }
+      shootThisTurn = 0;
     }
   }
 
     // Old shooter code, check then delete:
 
-    // // Pika shoots
-    // function pikaShoots(event) {
+    // // Tube shoots
+    // function tubeShoots(event) {
     //   if (shootThisTurn == 1) {
     //     // shoot
     //     // check bullets remaining
     //     if (bullets[(currentBullet+1)] == 400) {
     //       console.log("Able to shoot");
     //     }
-    //     bullets[currentBullet] = pikaPosition-20;
+    //     bullets[currentBullet] = tubePosition-20;
     //     console.log(`bullet fired to ${bullets[currentBullet]}`);
-    //     // cells[(pikaPosition-20)].classList.add("missile");
+    //     // cells[(tubePosition-20)].classList.add("missile");
     //     cells[bullets[currentBullet]].classList.add("missile");
     //     if (currentBullet < 9) {
     //       currentBullet++;
@@ -157,13 +169,41 @@ function init() {
     } else {
       cells[item].classList.remove("missile");
       arr[index] = item - 20;
-      cells[(item-20)].classList.add("missile");
+      if (cells[(item-20)].classList.contains("goomba")) {
+        cells[(item-20)].classList.remove("goomba");
+        cells[(item-20)].classList.add("explosion");
+        console.log("Goomba defeated");
+        arr[index] = 400;
+      } else {
+        cells[(item-20)].classList.add("missile");
+      }
     }
-    console.log(`Bullets at ${item}`);
+    // console.log(`Bullets at ${item}`);
   }
   // Itterate over bullets
   function bulletsMove() {
     bullets.forEach(updateLocation);
+  }
+
+  // Clear explosions
+  function clearExplosions() {
+    for (i=0; i<width; i++) {
+      if (cells[i].classList.contains("explosion")) {
+        cells[i].classList.remove("explosion");
+      }
+    }
+  }
+
+  // Checking if the game has been won
+  function checkWon() {
+    for (i=0; i<(4*width+1); i++) {
+      if (i == 4*width) {
+        console.log("Player Won!");
+      }
+      else if (cells[i].classList.contains("goomba")) {
+        break;
+      }
+    }
   }
 
   // Call functions
@@ -175,13 +215,15 @@ function init() {
   function nextInterval() {
     // all functions needed for each time interval
     // console.log("working");
+    checkWon();
+    clearExplosions();
     bulletsMove();
-    pikaShoots();
-    movePika();
+    tubeShoots();
+    moveTube();
   }
 
   // Calling actions for each interval
-  setInterval(nextInterval, 1000);
+  setInterval(nextInterval, 500);
 }
 
 document.addEventListener('DOMContentLoaded', init)
@@ -190,12 +232,12 @@ document.addEventListener('DOMContentLoaded', init)
 // USED ONCE:
 
 // create grid function
-// place Pika
+// place Tube
 
 // USED AGAIN:
 
-// Pika moves
-// Pika shoots
+// Tube moves
+// Tube shoots
 // bullets move
 
 
@@ -203,9 +245,16 @@ document.addEventListener('DOMContentLoaded', init)
 // - itterate around the 10 bullets so we can have more than one
 // - introduce velocity variable so we can implement moves only on interval
 // - introduce shootCommand boolean so we can implement shooting only on interval
-
-// TO-DO
 // - change bullet and pika sprites
 // - create logic to stop creating more bullets after 10
+// - add aliens
+// - detect collisions with the aliens
+// - detect when the game is won
 
+// TO-DO
+
+// - make the aliens move
+// - add music to the game
 // - create notification that no more bullets are left
+
+// - stop the page from moving/scrolling

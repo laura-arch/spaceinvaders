@@ -27,7 +27,7 @@
   width: 5%;
 }
 
-.grid div.pika {
+.grid div.tube {
   background-image: url('../assets/tube-sprite.png');
   background-repeat: no-repeat;
   background-size: cover;
@@ -35,6 +35,18 @@
 
 .grid div.missile {
   background-image: url('../assets/mario-sprite.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.grid div.goomba {
+  background-image: url('../assets/goomba-sprite.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.grid div.explosion {
+  background-image: url('../assets/pika-sprite.png');
   background-repeat: no-repeat;
   background-size: contain;
 }
