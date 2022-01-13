@@ -9,12 +9,12 @@ function init() {
 
   // DOM
   const grid = document.querySelector(".grid");
-  const width =  20; // change this value to the appropriate width
+  const width =  40; // change this value to the appropriate width
   const gridCellCount = width * width;
   const cells = [];
 
   // changing variables
-  let tubePosition = 390;
+  let tubePosition = gridCellCount - (width/2);
   const bullets = [
     400,
     400,
@@ -35,16 +35,25 @@ function init() {
 
   // SETUP
 
+  // document.querySelectorAll("div").style.width = 2%;
+
   // Create Grid
   function createGrid() {
     for (let i=0; i<(gridCellCount); i++) {
       var cell = document.createElement("div");
+      if (width == 40) {
+        cell.classList.add("forty");
+      } else if (width == 30) {
+        cell.classList.add("thirty")
+      }
       cells.push(cell);
-      cell.innerHTML = i;
+      // cell.innerHTML = i;
       grid.appendChild(cell);
     }
   }
   createGrid();
+
+  // document.querySelectorAll("div").style.width = 2%;
 
   // Position tube
   cells[tubePosition].classList.add("tube");
@@ -78,14 +87,14 @@ function init() {
     
     if (velocity == -1) {
       // move left
-      if (tubePosition % 20 !== 0) {
+      if (tubePosition % width !== 0) {
         cells[tubePosition].classList.remove("tube");
         tubePosition -= 1;
         cells[tubePosition].classList.add("tube");
       }
     } else if (velocity == 1) {
       // move right
-      if (tubePosition % 20 !== 19) {
+      if (tubePosition % width !== width-1) {
         cells[tubePosition].classList.remove("tube");
         tubePosition += 1;
         cells[tubePosition].classList.add("tube");
@@ -109,7 +118,7 @@ function init() {
           // console.log("Able to shoot");
 
           // shoot
-          bullets[currentBullet] = tubePosition-20;
+          bullets[currentBullet] = tubePosition-width;
           // console.log(`bullet fired to ${bullets[currentBullet]}`);
           // cells[(tubePosition-20)].classList.add("missile");
           cells[bullets[currentBullet]].classList.add("missile");
@@ -122,12 +131,12 @@ function init() {
           // console.log("Able to shoot");
 
           // shoot
-          bullets[currentBullet] = tubePosition-20;
+          bullets[currentBullet] = tubePosition-width;
           console.log(`bullet fired to ${bullets[currentBullet]}`);
           // cells[(tubePosition-20)].classList.add("missile");
           cells[bullets[currentBullet]].classList.add("missile");
           console.log(`number ${currentBullet} bullet fired to ${bullets[currentBullet]}`);
-          
+
           currentBullet = 0;
         }
       }
@@ -163,19 +172,19 @@ function init() {
   function updateLocation(item, index, arr) {
     if (item === 400) {
       // nothing happens
-    } else if (item <= 19) {
+    } else if (item < (width)) {
       cells[item].classList.remove("missile");
       arr[index] = 400;
     } else {
       cells[item].classList.remove("missile");
-      arr[index] = item - 20;
-      if (cells[(item-20)].classList.contains("goomba")) {
-        cells[(item-20)].classList.remove("goomba");
-        cells[(item-20)].classList.add("explosion");
+      arr[index] = item - width;
+      if (cells[(item-width)].classList.contains("goomba")) {
+        cells[(item-width)].classList.remove("goomba");
+        cells[(item-width)].classList.add("explosion");
         console.log("Goomba defeated");
         arr[index] = 400;
       } else {
-        cells[(item-20)].classList.add("missile");
+        cells[(item-width)].classList.add("missile");
       }
     }
     // console.log(`Bullets at ${item}`);
@@ -250,6 +259,7 @@ document.addEventListener('DOMContentLoaded', init)
 // - add aliens
 // - detect collisions with the aliens
 // - detect when the game is won
+// - add different sizes of board
 
 // TO-DO
 
