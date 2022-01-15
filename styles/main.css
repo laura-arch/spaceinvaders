@@ -27,15 +27,15 @@
   width: 5%;
 }
 
-.grid div.thirty {
-  height: 3.333%;
-  width: 3.333%;
+/* .grid div.thirty {
+  height: calc(10%/3);
+  width: calc(10%/3);
 }
 
 .grid div.forty {
   height: 2.5%;
   width: 2.5%;
-}
+} */
 
 .grid div.tube {
   background-image: url('../assets/tube-sprite.png');

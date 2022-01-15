@@ -9,7 +9,7 @@ function init() {
 
   // DOM
   const grid = document.querySelector(".grid");
-  const width =  30; // change this value to the appropriate width
+  const width =  20; // change this value to the appropriate width
   const gridCellCount = width * width;
   const cells = [];
 
@@ -31,6 +31,7 @@ function init() {
   let velocity = 0;
   let shootThisTurn = 0;
   let enemies = [];
+  let moveLeft = true;
 
   // FUNCTIONS
 
@@ -40,12 +41,18 @@ function init() {
 
   // Create Grid
   function createGrid() {
-    for (let i=0; i<(gridCellCount); i++) {
-      var cell = document.createElement("div");
+    for (let i=0; i<gridCellCount; i++) {
+      const cell = document.createElement("div");
+      cell.setAttribute("cellNumber", i);
+      // cell.style.width = "2%";
       if (width == 40) {
-        cell.classList.add("forty");
+        cell.style.width = "2.5%";
+        cell.style.height = "2.5%";
+        // cell.classList.add("forty");
       } else if (width == 30) {
-        cell.classList.add("thirty")
+        cell.style.width = `${10/3}%`;
+        cell.style.height = `${10/3}%`;
+        // cell.classList.add("thirty")
       }
       cells.push(cell);
       // cell.innerHTML = i;
@@ -54,15 +61,16 @@ function init() {
   }
   createGrid();
 
-  // document.querySelectorAll("div").style.width = 2%;
+  // document.querySelectorAll("div").style.width = "2%";
 
   // Position tube
   cells[tubePosition].classList.add("tube");
 
   // Position Aliens
   function createEnemies() {
-    for (let i=1; i<(width-1); i++) {
-      enemies.push([i, 1]);
+    for (let i=5; i<(width-5); i++) {
+      // enemies.push([i, 1]);
+      enemies.push({index: i, isAlive: true});
       // console.log(enemies);
       cells[i].classList.add("goomba");
     }
@@ -194,21 +202,47 @@ function init() {
     }
   }
 
-  // Moving enemies
-  // function moveLeft(currentValue, index, arr) {
-  //   console.log("running");
-  //   // if ((currentValue/width) !== 0) {
-  //   //   console.log("running");
-  //   //   // if (cells[currentValue-1].classList.contains("goomba") !== 1) {
-  //   //   //   cells.currentValue.classList.remove("goomba");
-  //   //   //   arr.index = currentValue-1;
-  //   //   //   cells[currentValue-1].classList.add("goomba");
-  //   //   // }
-  //   // }
-  // }
-  // function enemiesMove() {
-  //   enemies.forEach(moveLeft());
-  // }
+  // Moving Enemies
+
+  function enemiesMove(moveBy) {
+    
+      for (i=0; i<enemies.length; i++) {
+        const index = parseInt(enemies[i].index);
+        cells[index].classList.remove("goomba");
+      }
+      for (i=0; i<enemies.length; i++) {
+        const index = parseInt(enemies[i].index);
+        enemies[i].index += moveBy;
+      }
+      for (i=0; i<enemies.length; i++) {
+        const index = parseInt(enemies[i].index);
+        cells[index].classList.add("goomba");
+      }
+  }
+
+  function moveEnemies() {
+    if (moveLeft) {
+      if (enemies[0].index%width > 0) {
+        enemiesMove(-1);
+      }
+      else {
+        moveLeft = false;
+        enemiesMove(width);
+      }
+    }
+    else {
+      if ((enemies[enemies.length-1].index+1)%width !== 0) {
+        enemiesMove(1);
+        console.log(enemies[enemies.length-1].index);
+        console.log(width);
+      }
+      else {
+        moveLeft = true;
+        enemiesMove(width);
+        // console.log('switch direction')
+      }
+    }
+  }
 
   // Call functions
   window.addEventListener("keyup", updateVelocity);
@@ -224,7 +258,7 @@ function init() {
     bulletsMove();
     tubeShoots();
     moveTube();
-    // enemiesMove();
+    moveEnemies();
   }
 
   // Calling actions for each interval
@@ -257,9 +291,9 @@ document.addEventListener('DOMContentLoaded', init)
 // - detect when the game is won
 // - add different sizes of board
 // - change enemies to be stored in an array
+// - make the enemies move
 
 // TO-DO
-// - make the enemies move
 // - add music to the game
 // - create notification that no more bullets are left
 
