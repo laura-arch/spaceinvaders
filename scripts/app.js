@@ -32,6 +32,8 @@ function init() {
   let shootThisTurn = 0;
   let enemies = [];
   let moveLeft = true;
+  let won = false;
+  let lost = false;
 
   // FUNCTIONS
 
@@ -208,6 +210,7 @@ function init() {
     }
     if (enemiesRemaining == 0) {
       console.log("Player won!");
+      won=true;
     }
   }
 
@@ -260,7 +263,22 @@ function init() {
   function checkLost() {
     if (Math.floor(enemies[0].index/width) >= width-3) {
       console.log("Player loses");
+      lost=true;
     }
+  }
+
+  // how can I remove this from the screen?
+  function displayWin() {
+    // document.querySelectorAll("div").style.display = "none";
+    // document.getElementsByClassName("grid-wrapper").style.display = "none";
+    const message = document.createElement("img");
+    message.src = "../assets/mario-wins-image.jpeg";
+    document.querySelector("body").appendChild(message);
+  }
+  function displayLoss() {
+    const message = document.createElement("img");
+    message.src = "../assets/game-over-image.jpeg";
+    document.querySelector("body").appendChild(message);
   }
 
   // Call functions
@@ -272,17 +290,27 @@ function init() {
   function nextInterval() {
     // all functions needed for each time interval
     // console.log("working");
-    checkWon();
-    clearExplosions();
-    moveEnemies();
-    bulletsMove();
-    tubeShoots();
-    moveTube();
-    checkLost();
+    if (!won && !lost) {
+      checkWon();
+      clearExplosions();
+      moveEnemies();
+      bulletsMove();
+      tubeShoots();
+      moveTube();
+      checkLost();
+    }
+    else if (won) {
+      // console.log("winning image");
+      displayWin();
+    }
+    else {
+      // console.log("losing image");
+      displayLoss();
+    }
   }
 
   // Calling actions for each interval
-  setInterval(nextInterval, 100);
+    setInterval(nextInterval, 100);
 }
 
 document.addEventListener('DOMContentLoaded', init)
@@ -312,11 +340,13 @@ document.addEventListener('DOMContentLoaded', init)
 // - add different sizes of board
 // - change enemies to be stored in an array
 // - make the enemies move
+// - update detect collisions to be based on enemies array
 
 // TO-DO
+// - add winning and losing visuals
 // - add music to the game
 // - create notification that no more bullets are left
 
 // - stop the page from moving/scrolling
 
-// Completed this version: clear explosions over larger area, improve check won function and introduce check lost functions, remove enemies from array when defeated
+// Completed this version: added winning/losing images
