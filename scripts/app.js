@@ -9,27 +9,28 @@ function init() {
 
   // DOM
   const grid = document.querySelector(".grid");
-  const width =  40; // change this value to the appropriate width
+  const width =  30; // change this value to the appropriate width
   const gridCellCount = width * width;
   const cells = [];
 
   // changing variables
   let tubePosition = gridCellCount - (width/2);
   const bullets = [
-    400,
-    400,
-    400,
-    400,
-    400,
-    400,
-    400,
-    400,
-    400,
-    400,
+    gridCellCount,
+    gridCellCount,
+    gridCellCount,
+    gridCellCount,
+    gridCellCount,
+    gridCellCount,
+    gridCellCount,
+    gridCellCount,
+    gridCellCount,
+    gridCellCount,
   ]
   let currentBullet = 0;
   let velocity = 0;
   let shootThisTurn = 0;
+  let enemies = [];
 
   // FUNCTIONS
 
@@ -60,7 +61,9 @@ function init() {
 
   // Position Aliens
   function createEnemies() {
-    for (let i=0; i<(width); i++) {
+    for (let i=1; i<(width-1); i++) {
+      enemies.push([i, 1]);
+      // console.log(enemies);
       cells[i].classList.add("goomba");
     }
   }
@@ -114,7 +117,7 @@ function init() {
     if (shootThisTurn == 1) {
       // check bullets remaining
       if (currentBullet < 9) {
-        if (bullets[currentBullet] == 400) {
+        if (bullets[currentBullet] == gridCellCount) {
           // console.log("Able to shoot");
 
           // shoot
@@ -127,7 +130,7 @@ function init() {
           currentBullet++;
         }
       } else {
-        if (bullets[currentBullet] == 400) {
+        if (bullets[currentBullet] == gridCellCount) {
           // console.log("Able to shoot");
 
           // shoot
@@ -144,37 +147,13 @@ function init() {
     }
   }
 
-    // Old shooter code, check then delete:
-
-    // // Tube shoots
-    // function tubeShoots(event) {
-    //   if (shootThisTurn == 1) {
-    //     // shoot
-    //     // check bullets remaining
-    //     if (bullets[(currentBullet+1)] == 400) {
-    //       console.log("Able to shoot");
-    //     }
-    //     bullets[currentBullet] = tubePosition-20;
-    //     console.log(`bullet fired to ${bullets[currentBullet]}`);
-    //     // cells[(tubePosition-20)].classList.add("missile");
-    //     cells[bullets[currentBullet]].classList.add("missile");
-    //     if (currentBullet < 9) {
-    //       currentBullet++;
-    //     } else {
-    //       currentBullet = 0;
-    //     }
-    //     console.log(`number ${currentBullet} bullet fired`);
-    //   }
-    //   shootThisTurn = 0;
-    // }
-
   // Move bullet
   function updateLocation(item, index, arr) {
-    if (item === 400) {
+    if (item === gridCellCount) {
       // nothing happens
     } else if (item < (width)) {
       cells[item].classList.remove("missile");
-      arr[index] = 400;
+      arr[index] = gridCellCount;
     } else {
       cells[item].classList.remove("missile");
       arr[index] = item - width;
@@ -182,7 +161,7 @@ function init() {
         cells[(item-width)].classList.remove("goomba");
         cells[(item-width)].classList.add("explosion");
         console.log("Goomba defeated");
-        arr[index] = 400;
+        arr[index] = gridCellCount;
       } else {
         cells[(item-width)].classList.add("missile");
       }
@@ -215,6 +194,22 @@ function init() {
     }
   }
 
+  // Moving enemies
+  // function moveLeft(currentValue, index, arr) {
+  //   console.log("running");
+  //   // if ((currentValue/width) !== 0) {
+  //   //   console.log("running");
+  //   //   // if (cells[currentValue-1].classList.contains("goomba") !== 1) {
+  //   //   //   cells.currentValue.classList.remove("goomba");
+  //   //   //   arr.index = currentValue-1;
+  //   //   //   cells[currentValue-1].classList.add("goomba");
+  //   //   // }
+  //   // }
+  // }
+  // function enemiesMove() {
+  //   enemies.forEach(moveLeft());
+  // }
+
   // Call functions
   window.addEventListener("keyup", updateVelocity);
   window.addEventListener("keyup", confirmShooting);
@@ -229,6 +224,7 @@ function init() {
     bulletsMove();
     tubeShoots();
     moveTube();
+    // enemiesMove();
   }
 
   // Calling actions for each interval
@@ -260,10 +256,10 @@ document.addEventListener('DOMContentLoaded', init)
 // - detect collisions with the aliens
 // - detect when the game is won
 // - add different sizes of board
+// - change enemies to be stored in an array
 
 // TO-DO
-
-// - make the aliens move
+// - make the enemies move
 // - add music to the game
 // - create notification that no more bullets are left
 
