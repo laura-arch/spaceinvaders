@@ -169,6 +169,14 @@ function init() {
         cells[(item-width)].classList.remove("goomba");
         cells[(item-width)].classList.add("explosion");
         console.log("Goomba defeated");
+        // remove the enemy from the enemies array:
+        for (i=0; i<enemies.length; i++) {
+          if (enemies[i].index == item-width) {
+            enemies[i].isAlive = false;
+            enemies.splice(i, 1);
+            console.log(`There are ${enemies.length} enemies remaining`);
+          }
+        }
         arr[index] = gridCellCount;
       } else {
         cells[(item-width)].classList.add("missile");
@@ -183,7 +191,7 @@ function init() {
 
   // Clear explosions
   function clearExplosions() {
-    for (i=0; i<width; i++) {
+    for (i=0; i<gridCellCount-width; i++) {
       if (cells[i].classList.contains("explosion")) {
         cells[i].classList.remove("explosion");
       }
@@ -192,13 +200,14 @@ function init() {
 
   // Checking if the game has been won
   function checkWon() {
-    for (i=0; i<(4*width+1); i++) {
-      if (i == 4*width) {
-        console.log("Player Won!");
+    let enemiesRemaining = 0;
+    for (i=0; i<enemies.length; i++)  {
+      if (enemies[i].isAlive) {
+        enemiesRemaining++;
       }
-      else if (cells[i].classList.contains("goomba")) {
-        break;
-      }
+    }
+    if (enemiesRemaining == 0) {
+      console.log("Player won!");
     }
   }
 
@@ -211,12 +220,16 @@ function init() {
         cells[index].classList.remove("goomba");
       }
       for (i=0; i<enemies.length; i++) {
-        const index = parseInt(enemies[i].index);
-        enemies[i].index += moveBy;
+        // if (enemies[i].isAlive) {
+          const index = parseInt(enemies[i].index);
+          enemies[i].index += moveBy;
+        // }
       }
       for (i=0; i<enemies.length; i++) {
-        const index = parseInt(enemies[i].index);
-        cells[index].classList.add("goomba");
+        // if (enemies[i].isAlive) {
+          const index = parseInt(enemies[i].index);
+          cells[index].classList.add("goomba");
+        // }
       }
   }
 
@@ -233,14 +246,20 @@ function init() {
     else {
       if ((enemies[enemies.length-1].index+1)%width !== 0) {
         enemiesMove(1);
-        console.log(enemies[enemies.length-1].index);
-        console.log(width);
+        // console.log(enemies[enemies.length-1].index);
+        // console.log(width);
       }
       else {
         moveLeft = true;
         enemiesMove(width);
         // console.log('switch direction')
       }
+    }
+  }
+
+  function checkLost() {
+    if (Math.floor(enemies[0].index/width) >= width-3) {
+      console.log("Player loses");
     }
   }
 
@@ -255,14 +274,15 @@ function init() {
     // console.log("working");
     checkWon();
     clearExplosions();
+    moveEnemies();
     bulletsMove();
     tubeShoots();
     moveTube();
-    moveEnemies();
+    checkLost();
   }
 
   // Calling actions for each interval
-  setInterval(nextInterval, 500);
+  setInterval(nextInterval, 100);
 }
 
 document.addEventListener('DOMContentLoaded', init)
@@ -298,3 +318,5 @@ document.addEventListener('DOMContentLoaded', init)
 // - create notification that no more bullets are left
 
 // - stop the page from moving/scrolling
+
+// Completed this version: clear explosions over larger area, improve check won function and introduce check lost functions, remove enemies from array when defeated
