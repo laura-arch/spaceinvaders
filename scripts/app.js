@@ -34,6 +34,7 @@ function init() {
   let moveLeft = true;
   let won = false;
   let lost = false;
+  let pauseClicked = false;
 
   // FUNCTIONS
 
@@ -218,7 +219,13 @@ function init() {
   function refreshPage() {
     location.reload();
   }
-  document.querySelector("input").addEventListener("click", refreshPage);
+  document.querySelector("#reset").addEventListener("click", refreshPage);
+
+  // Checking if pause button has been hit
+  function pause() {
+    pauseClicked = !pauseClicked;
+  }
+  document.querySelector("#pause").addEventListener("click", pause);
 
   // Moving Enemies
 
@@ -294,10 +301,11 @@ function init() {
   // WHY IS bulletsMove() CALLED HERE?
 
   // Actions for each interval
+
   function nextInterval() {
     // all functions needed for each time interval
     // console.log("working");
-    if (!won && !lost) {
+    if (!won && !lost && !pauseClicked) {
       checkWon();
       clearExplosions();
       moveEnemies();
@@ -311,7 +319,7 @@ function init() {
       displayWin();
       clearInterval(runGame);
     }
-    else {
+    else if (lost) {
       // console.log("losing image");
       displayLoss();
       clearInterval(runGame);
@@ -352,4 +360,4 @@ document.addEventListener('DOMContentLoaded', init)
 // - how can I get the sound to work?
 
 // LATEST UPDATE
-// added refresh button and implemented clearInterval to stop game
+// added pause button
