@@ -13,7 +13,7 @@ h1 {
 }
 
 .grid-wrapper {
-  height: 100vh;
+  height: 80vh;
   width: 100vw;
   display: flex;
   justify-content: center;

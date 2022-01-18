@@ -96,6 +96,14 @@ function init() {
     // console.log(velocity);
   }
 
+  // Adding background music
+  const backgroundMusic = new Audio("../Sounds/background.mp3");
+  backgroundMusic.play();
+  backgroundMusic.addEventListener('ended', function() {
+    this.currentTime = 0;
+    this.play();
+  }, false);
+
   // Moving Tube
   function moveTube() {
     
@@ -282,13 +290,13 @@ function init() {
 
   // how can I remove this from the screen?
   function displayWin() {
-    // document.querySelectorAll("div").style.display = "none";
-    // document.getElementsByClassName("grid-wrapper").style.display = "none";
+    document.querySelector(".grid-wrapper").style.display = "none";
     const message = document.createElement("img");
     message.src = "../assets/mario-wins-image.jpeg";
     document.querySelector("body").appendChild(message);
   }
   function displayLoss() {
+    document.querySelector(".grid-wrapper").style.display = "none";
     const message = document.createElement("img");
     message.src = "../assets/game-over-image.jpeg";
     document.querySelector("body").appendChild(message);
@@ -327,7 +335,7 @@ function init() {
   }
 
   // Calling actions for each interval
-    const runGame = setInterval(nextInterval, 100);
+    const runGame = setInterval(nextInterval, 200);
 }
 
 document.addEventListener('DOMContentLoaded', init)
@@ -362,4 +370,4 @@ document.addEventListener('DOMContentLoaded', init)
 // - how can I get the sound to work?
 
 // LATEST UPDATE
-// added a title (HTML & CSS)
+// added background music and improved win/loss screens by hiding gameboard
