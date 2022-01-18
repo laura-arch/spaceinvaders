@@ -35,6 +35,7 @@ function init() {
   let won = false;
   let lost = false;
   let pauseClicked = false;
+  let musicOn = true;
 
   // FUNCTIONS
 
@@ -100,9 +101,20 @@ function init() {
   const backgroundMusic = new Audio("../Sounds/background.mp3");
   backgroundMusic.play();
   backgroundMusic.addEventListener('ended', function() {
-    this.currentTime = 0;
-    this.play();
+    if (musicOn) {
+      this.currentTime = 0;
+      this.play();
+    }
   }, false);
+  document.querySelector("#mute").addEventListener("click", function() {
+    musicOn = !musicOn;
+    console.log(musicOn);
+    if (musicOn) {
+      backgroundMusic.play();
+    } else {
+      backgroundMusic.pause();
+    }
+  })
 
   // Moving Tube
   function moveTube() {
@@ -359,15 +371,17 @@ document.addEventListener('DOMContentLoaded', init)
 // - add a restart button
 // - add a pause game button
 // - add a title
+// - stop the page from moving/scrolling
+// - add music to the game
+// - add a mute button
 
 // TO-DO
-// - add music to the game (html)
+// - add sound effects
+// - add settings for board size and game speed
 // - create notification that no more bullets are left
-// - stop the page from moving/scrolling
-
 
 // QUESTIONS
-// - how can I get the sound to work?
+
 
 // LATEST UPDATE
-// added background music and improved win/loss screens by hiding gameboard
+// added mute button
