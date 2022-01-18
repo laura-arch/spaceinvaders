@@ -349,15 +349,17 @@ document.addEventListener('DOMContentLoaded', init)
 // - update detect collisions to be based on enemies array
 // - add winning and losing visuals
 // - add a restart button
+// - add a pause game button
+// - add a title
 
 // TO-DO
 // - add music to the game (html)
 // - create notification that no more bullets are left
 // - stop the page from moving/scrolling
-// - add a pause game button
+
 
 // QUESTIONS
 // - how can I get the sound to work?
 
 // LATEST UPDATE
-// added pause button
+// added a title (HTML & CSS)

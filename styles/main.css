@@ -2,6 +2,16 @@
   box-sizing: border-box;
 }
 
+body {
+  text-align: center;
+}
+
+h1 {
+  font-family: 'VT323', monospace;
+  color: red;
+  font-size: 48px;
+}
+
 .grid-wrapper {
   height: 100vh;
   width: 100vw;
@@ -50,6 +60,11 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-position-x: center;
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
 }
 
 input {
