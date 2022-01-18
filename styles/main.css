@@ -51,3 +51,7 @@
   background-size: cover;
   background-position-x: center;
 }
+
+input {
+  height: 30px;
+}

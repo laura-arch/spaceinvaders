@@ -214,6 +214,12 @@ function init() {
     }
   }
 
+  // Checking if refresh has been hit
+  function refreshPage() {
+    location.reload();
+  }
+  document.querySelector("input").addEventListener("click", refreshPage);
+
   // Moving Enemies
 
   function enemiesMove(moveBy) {
@@ -285,6 +291,7 @@ function init() {
   window.addEventListener("keyup", updateVelocity);
   window.addEventListener("keyup", confirmShooting);
   bulletsMove();
+  // WHY IS bulletsMove() CALLED HERE?
 
   // Actions for each interval
   function nextInterval() {
@@ -302,31 +309,22 @@ function init() {
     else if (won) {
       // console.log("winning image");
       displayWin();
+      clearInterval(runGame);
     }
     else {
       // console.log("losing image");
       displayLoss();
+      clearInterval(runGame);
     }
   }
 
   // Calling actions for each interval
-    setInterval(nextInterval, 100);
+    const runGame = setInterval(nextInterval, 100);
 }
 
 document.addEventListener('DOMContentLoaded', init)
 
-
-// USED ONCE:
-
-// create grid function
-// place Tube
-
-// USED AGAIN:
-
-// Tube moves
-// Tube shoots
-// bullets move
-
+// TASK LIST
 
 // DONE
 // - itterate around the 10 bullets so we can have more than one
@@ -341,12 +339,17 @@ document.addEventListener('DOMContentLoaded', init)
 // - change enemies to be stored in an array
 // - make the enemies move
 // - update detect collisions to be based on enemies array
+// - add winning and losing visuals
+// - add a restart button
 
 // TO-DO
-// - add winning and losing visuals
-// - add music to the game
+// - add music to the game (html)
 // - create notification that no more bullets are left
-
 // - stop the page from moving/scrolling
+// - add a pause game button
 
-// Completed this version: added winning/losing images
+// QUESTIONS
+// - how can I get the sound to work?
+
+// LATEST UPDATE
+// added refresh button and implemented clearInterval to stop game
