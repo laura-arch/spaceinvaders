@@ -8,6 +8,12 @@ function init() {
   const grid = document.querySelector(".grid");
   const gridCellCount = width * width;
   const cells = [];
+  // sounds
+  const backgroundMusic = new Audio("../Sounds/background.mp3");
+  const goombaHitSound = new Audio("../Sounds/goomba-hit-sound.mp3");
+  const winningMusic = new Audio("../Sounds/win.mp3");
+  const losingMusic = new Audio("../Sounds/gameover.mp3");
+  const shootSound = new Audio("../Sounds/bullet-fired.mp3");
 
   // changing variables
   let tubePosition = gridCellCount - (width/2); // tracks location of the tube, initialised to center
@@ -76,14 +82,12 @@ function init() {
   createEnemies();
 
   // Adding background music
-  const backgroundMusic = new Audio("../Sounds/background.mp3");
   backgroundMusic.addEventListener('ended', function() {
     if (musicOn) {
       this.currentTime = 0;
       this.play();
     }
   }, false);
-
 
 
   // EVENT LISTENER FUNCTIONS - BUTTONS
@@ -216,6 +220,8 @@ function init() {
         // remove the enemy from the enemies array:
         for (i=0; i<enemies.length; i++) {
           if (enemies[i].index == item-width) {
+            goombaHitSound.currentTime=0;
+            goombaHitSound.play();
             enemies[i].isAlive = false;
             enemies.splice(i, 1);
             console.log(`There are ${enemies.length} enemies remaining`);
@@ -242,6 +248,8 @@ function init() {
           // console.log("Able to shoot");
 
           // shoot
+          shootSound.currentTime = 0;
+          shootSound.play();
           bullets[currentBullet] = tubePosition-width;
           // console.log(`bullet fired to ${bullets[currentBullet]}`);
           // cells[(tubePosition-20)].classList.add("missile");
@@ -255,6 +263,8 @@ function init() {
           // console.log("Able to shoot");
 
           // shoot
+          shootSound.currentTime = 0;
+          shootSound.play();
           bullets[currentBullet] = tubePosition-width;
           console.log(`bullet fired to ${bullets[currentBullet]}`);
           // cells[(tubePosition-20)].classList.add("missile");
@@ -304,12 +314,16 @@ function init() {
     const message = document.createElement("img");
     message.src = "../assets/mario-wins-image.jpeg";
     document.querySelector("body").appendChild(message);
+    backgroundMusic.pause();
+    winningMusic.play();
   }
   function displayLoss() {
     document.querySelector(".grid-wrapper").style.display = "none";
     const message = document.createElement("img");
     message.src = "../assets/game-over-image.jpeg";
     document.querySelector("body").appendChild(message);
+    backgroundMusic.pause();
+    losingMusic.play();
   }
 
 
@@ -373,9 +387,10 @@ document.addEventListener('DOMContentLoaded', init)
 // - add settings for board size and game speed
 // - create notification that no more bullets are left
 // - add scoring
+// - DRY the code
 
 // QUESTIONS
 
 
 // LATEST UPDATE
-// refactored the event listener functions and organised js document layout, stopped the music auto-playing
+// added winning and losing music and bullet fired and hit sounds
