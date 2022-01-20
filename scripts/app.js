@@ -1,20 +1,16 @@
 function init() {
 
-  // Sound
-
-  // var audio = document.querySelector(audio);
-  // audio.play();
-
   //VARIABLES
 
-  // DOM
+  let width =  20;        // change this value to the appropriate width: 20, 30 or 40
+
+  // constant variables
   const grid = document.querySelector(".grid");
-  const width =  20; // change this value to the appropriate width
   const gridCellCount = width * width;
   const cells = [];
 
   // changing variables
-  let tubePosition = gridCellCount - (width/2);
+  let tubePosition = gridCellCount - (width/2); // tracks location of the tube, initialised to center
   const bullets = [
     gridCellCount,
     gridCellCount,
@@ -26,22 +22,22 @@ function init() {
     gridCellCount,
     gridCellCount,
     gridCellCount,
-  ]
-  let currentBullet = 0;
-  let velocity = 0;
-  let shootThisTurn = 0;
-  let enemies = [];
+  ]                       // array of all ten available bullets
+  let enemies = [];       // array of all the enemies currently on screen
+
+  let currentBullet = 0;  // tracks which of the ten bullets is being fired
+  let velocity = 0;       // tracks direction the tube is travelling in
+  let shootThisTurn = 0;  // tracks whether the user has pressed to shoot
+  
   let moveLeft = true;
   let won = false;
   let lost = false;
   let pauseClicked = false;
-  let musicOn = true;
+  let musicOn = false;
 
   // FUNCTIONS
 
   // SETUP
-
-  // document.querySelectorAll("div").style.width = 2%;
 
   // Create Grid
   function createGrid() {
@@ -65,8 +61,6 @@ function init() {
   }
   createGrid();
 
-  // document.querySelectorAll("div").style.width = "2%";
-
   // Position tube
   cells[tubePosition].classList.add("tube");
 
@@ -81,7 +75,38 @@ function init() {
   }
   createEnemies();
 
-  // RECURRING FUNCTIONS
+  // Adding background music
+  const backgroundMusic = new Audio("../Sounds/background.mp3");
+  backgroundMusic.addEventListener('ended', function() {
+    if (musicOn) {
+      this.currentTime = 0;
+      this.play();
+    }
+  }, false);
+
+
+
+  // EVENT LISTENER FUNCTIONS - BUTTONS
+
+  // Checking if refresh has been hit
+  document.querySelector("#reset").addEventListener("click", () => location.reload());
+
+  // Checking if pause button has been hit
+  document.querySelector("#pause").addEventListener("click", () => pauseClicked = !pauseClicked);
+
+  // Checking if mute button has been hit
+  document.querySelector("#mute").addEventListener("click", function() {
+    musicOn = !musicOn;
+    console.log(`Music on is ${musicOn}`);
+    if (musicOn) {
+      backgroundMusic.play();
+    } else {
+      backgroundMusic.pause();
+    }
+  })
+
+
+  // EVENT LISTENER FUNCTIONS - OTHER
 
   // Logging velocity
   function updateVelocity(event) {
@@ -96,45 +121,7 @@ function init() {
     }
     // console.log(velocity);
   }
-
-  // Adding background music
-  const backgroundMusic = new Audio("../Sounds/background.mp3");
-  backgroundMusic.play();
-  backgroundMusic.addEventListener('ended', function() {
-    if (musicOn) {
-      this.currentTime = 0;
-      this.play();
-    }
-  }, false);
-  document.querySelector("#mute").addEventListener("click", function() {
-    musicOn = !musicOn;
-    console.log(musicOn);
-    if (musicOn) {
-      backgroundMusic.play();
-    } else {
-      backgroundMusic.pause();
-    }
-  })
-
-  // Moving Tube
-  function moveTube() {
-    
-    if (velocity == -1) {
-      // move left
-      if (tubePosition % width !== 0) {
-        cells[tubePosition].classList.remove("tube");
-        tubePosition -= 1;
-        cells[tubePosition].classList.add("tube");
-      }
-    } else if (velocity == 1) {
-      // move right
-      if (tubePosition % width !== width-1) {
-        cells[tubePosition].classList.remove("tube");
-        tubePosition += 1;
-        cells[tubePosition].classList.add("tube");
-      }
-    }
-  }
+  window.addEventListener("keyup", updateVelocity);
 
   // Register shoot command
   function confirmShooting(event) {
@@ -142,39 +129,73 @@ function init() {
       shootThisTurn = 1;
     }
   }
+  window.addEventListener("keyup", confirmShooting);
 
-  // Tube shoots a Mario
-  function tubeShoots(event) {
-    if (shootThisTurn == 1) {
-      // check bullets remaining
-      if (currentBullet < 9) {
-        if (bullets[currentBullet] == gridCellCount) {
-          // console.log("Able to shoot");
 
-          // shoot
-          bullets[currentBullet] = tubePosition-width;
-          // console.log(`bullet fired to ${bullets[currentBullet]}`);
-          // cells[(tubePosition-20)].classList.add("missile");
-          cells[bullets[currentBullet]].classList.add("missile");
-          console.log(`number ${currentBullet} bullet fired to ${bullets[currentBullet]}`);
+  // RECURRING FUNCTIONS
+  // These happen on each interval
 
-          currentBullet++;
-        }
-      } else {
-        if (bullets[currentBullet] == gridCellCount) {
-          // console.log("Able to shoot");
-
-          // shoot
-          bullets[currentBullet] = tubePosition-width;
-          console.log(`bullet fired to ${bullets[currentBullet]}`);
-          // cells[(tubePosition-20)].classList.add("missile");
-          cells[bullets[currentBullet]].classList.add("missile");
-          console.log(`number ${currentBullet} bullet fired to ${bullets[currentBullet]}`);
-
-          currentBullet = 0;
-        }
+  // Checking if the game has been won
+  function checkWon() {
+    let enemiesRemaining = 0;
+    for (i=0; i<enemies.length; i++)  {
+      if (enemies[i].isAlive) {
+        enemiesRemaining++;
       }
-      shootThisTurn = 0;
+    }
+    if (enemiesRemaining == 0) {
+      console.log("Player won!");
+      won=true;
+    }
+  }
+
+  // Clear explosions
+  function clearExplosions() {
+    for (i=0; i<gridCellCount-width; i++) {
+      if (cells[i].classList.contains("explosion")) {
+        cells[i].classList.remove("explosion");
+      }
+    }
+  }
+
+  // Moving Enemies by set direction
+  function enemiesMove(moveBy) {
+    for (i=0; i<enemies.length; i++) {
+      const index = parseInt(enemies[i].index);
+      cells[index].classList.remove("goomba");
+    }
+    for (i=0; i<enemies.length; i++) {
+      const index = parseInt(enemies[i].index);
+      enemies[i].index += moveBy;
+    }
+    for (i=0; i<enemies.length; i++) {
+      const index = parseInt(enemies[i].index);
+      cells[index].classList.add("goomba");
+    }
+  }
+
+  // Determine the direction the enemies should move
+  function moveEnemies() {
+    if (moveLeft) {
+      if (enemies[0].index%width > 0) {
+        enemiesMove(-1);
+      }
+      else {
+        moveLeft = false;
+        enemiesMove(width);
+      }
+    }
+    else {
+      if ((enemies[enemies.length-1].index+1)%width !== 0) {
+        enemiesMove(1);
+        // console.log(enemies[enemies.length-1].index);
+        // console.log(width);
+      }
+      else {
+        moveLeft = true;
+        enemiesMove(width);
+        // console.log('switch direction')
+      }
     }
   }
 
@@ -212,87 +233,62 @@ function init() {
     bullets.forEach(updateLocation);
   }
 
-  // Clear explosions
-  function clearExplosions() {
-    for (i=0; i<gridCellCount-width; i++) {
-      if (cells[i].classList.contains("explosion")) {
-        cells[i].classList.remove("explosion");
+  // Tube shoots a Mario
+  function tubeShoots(event) {
+    if (shootThisTurn == 1) {
+      // check bullets remaining
+      if (currentBullet < 9) {
+        if (bullets[currentBullet] == gridCellCount) {
+          // console.log("Able to shoot");
+
+          // shoot
+          bullets[currentBullet] = tubePosition-width;
+          // console.log(`bullet fired to ${bullets[currentBullet]}`);
+          // cells[(tubePosition-20)].classList.add("missile");
+          cells[bullets[currentBullet]].classList.add("missile");
+          console.log(`number ${currentBullet} bullet fired to ${bullets[currentBullet]}`);
+
+          currentBullet++;
+        }
+      } else {
+        if (bullets[currentBullet] == gridCellCount) {
+          // console.log("Able to shoot");
+
+          // shoot
+          bullets[currentBullet] = tubePosition-width;
+          console.log(`bullet fired to ${bullets[currentBullet]}`);
+          // cells[(tubePosition-20)].classList.add("missile");
+          cells[bullets[currentBullet]].classList.add("missile");
+          console.log(`number ${currentBullet} bullet fired to ${bullets[currentBullet]}`);
+
+          currentBullet = 0;
+        }
       }
+      shootThisTurn = 0;
     }
   }
 
-  // Checking if the game has been won
-  function checkWon() {
-    let enemiesRemaining = 0;
-    for (i=0; i<enemies.length; i++)  {
-      if (enemies[i].isAlive) {
-        enemiesRemaining++;
-      }
-    }
-    if (enemiesRemaining == 0) {
-      console.log("Player won!");
-      won=true;
-    }
-  }
-
-  // Checking if refresh has been hit
-  function refreshPage() {
-    location.reload();
-  }
-  document.querySelector("#reset").addEventListener("click", refreshPage);
-
-  // Checking if pause button has been hit
-  function pause() {
-    pauseClicked = !pauseClicked;
-  }
-  document.querySelector("#pause").addEventListener("click", pause);
-
-  // Moving Enemies
-
-  function enemiesMove(moveBy) {
+  // Moving Tube
+  function moveTube() {
     
-      for (i=0; i<enemies.length; i++) {
-        const index = parseInt(enemies[i].index);
-        cells[index].classList.remove("goomba");
+    if (velocity == -1) {
+      // move left
+      if (tubePosition % width !== 0) {
+        cells[tubePosition].classList.remove("tube");
+        tubePosition -= 1;
+        cells[tubePosition].classList.add("tube");
       }
-      for (i=0; i<enemies.length; i++) {
-        // if (enemies[i].isAlive) {
-          const index = parseInt(enemies[i].index);
-          enemies[i].index += moveBy;
-        // }
-      }
-      for (i=0; i<enemies.length; i++) {
-        // if (enemies[i].isAlive) {
-          const index = parseInt(enemies[i].index);
-          cells[index].classList.add("goomba");
-        // }
-      }
-  }
-
-  function moveEnemies() {
-    if (moveLeft) {
-      if (enemies[0].index%width > 0) {
-        enemiesMove(-1);
-      }
-      else {
-        moveLeft = false;
-        enemiesMove(width);
-      }
-    }
-    else {
-      if ((enemies[enemies.length-1].index+1)%width !== 0) {
-        enemiesMove(1);
-        // console.log(enemies[enemies.length-1].index);
-        // console.log(width);
-      }
-      else {
-        moveLeft = true;
-        enemiesMove(width);
-        // console.log('switch direction')
+    } else if (velocity == 1) {
+      // move right
+      if (tubePosition % width !== width-1) {
+        cells[tubePosition].classList.remove("tube");
+        tubePosition += 1;
+        cells[tubePosition].classList.add("tube");
       }
     }
   }
 
+  // Checking if the game has been lost
   function checkLost() {
     if (Math.floor(enemies[0].index/width) >= width-3) {
       console.log("Player loses");
@@ -300,7 +296,9 @@ function init() {
     }
   }
 
-  // how can I remove this from the screen?
+  // FINAL FUNCTIONS
+
+  // Showing a win or a loss
   function displayWin() {
     document.querySelector(".grid-wrapper").style.display = "none";
     const message = document.createElement("img");
@@ -314,17 +312,12 @@ function init() {
     document.querySelector("body").appendChild(message);
   }
 
-  // Call functions
-  window.addEventListener("keyup", updateVelocity);
-  window.addEventListener("keyup", confirmShooting);
-  bulletsMove();
-  // WHY IS bulletsMove() CALLED HERE?
+
+  // RUNNING FUNCTIONS
 
   // Actions for each interval
-
   function nextInterval() {
     // all functions needed for each time interval
-    // console.log("working");
     if (!won && !lost && !pauseClicked) {
       checkWon();
       clearExplosions();
@@ -345,8 +338,7 @@ function init() {
       clearInterval(runGame);
     }
   }
-
-  // Calling actions for each interval
+  // Starting the intervals
     const runGame = setInterval(nextInterval, 200);
 }
 
@@ -376,12 +368,14 @@ document.addEventListener('DOMContentLoaded', init)
 // - add a mute button
 
 // TO-DO
+// - change the reset function not to refresh the whole page
 // - add sound effects
 // - add settings for board size and game speed
 // - create notification that no more bullets are left
+// - add scoring
 
 // QUESTIONS
 
 
 // LATEST UPDATE
-// added mute button
+// refactored the event listener functions and organised js document layout, stopped the music auto-playing
