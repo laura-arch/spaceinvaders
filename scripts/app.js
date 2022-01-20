@@ -2,12 +2,12 @@ function init() {
 
   //VARIABLES
 
-  let width =  20;        // change this value to the appropriate width: 20, 30 or 40
+  let width =  30;        // change this value to the appropriate width: 20, 30 or 40
+  let gridCellCount = width * width;
+  let cells = [];
 
   // constant variables
   const grid = document.querySelector(".grid");
-  const gridCellCount = width * width;
-  const cells = [];
   // sounds
   const backgroundMusic = new Audio("../Sounds/background.mp3");
   const goombaHitSound = new Audio("../Sounds/goomba-hit-sound.mp3");
@@ -93,8 +93,7 @@ function init() {
   // EVENT LISTENER FUNCTIONS - BUTTONS
 
   // Checking if refresh has been hit
-  // document.querySelector("#reset").addEventListener("click", () => location.reload());
-  document.querySelector("#reset").addEventListener("click", function refreshGame() {
+  function refreshGame() {
     //cancel interval
     clearInterval(runGame);
     //reset variables
@@ -110,17 +109,20 @@ function init() {
     won = false;
     lost = false;
     pauseClicked = false;
-    for (i=0; i<gridCellCount; i++) {
-      cells.pop();
-      document.querySelector(".grid > div").remove();
-    }
+    cells = [];
+    document.querySelectorAll(".grid > div").forEach(
+      (element) => {
+        element.remove();
+      }
+    );
     //re-run functions
     createGrid();
     cells[tubePosition].classList.add("tube");
     createEnemies();
     //restart interval
-    setInterval(nextInterval, 200);
-  });
+    runGame = setInterval(nextInterval, 200);
+  }
+  document.querySelector("#reset").addEventListener("click", refreshGame);
 
   // Checking if pause button has been hit
   document.querySelector("#pause").addEventListener("click", () => pauseClicked = !pauseClicked);
@@ -136,22 +138,25 @@ function init() {
     }
   });
 
-  // document.querySelector("#size").addEventListener("click", function() {
-  //   if (width == 20) {
-  //     width = 30;
-  //     this.src="assets/orange.png";
-  //     refreshGame();
-  //   } else if (width == 30) {
-  //     width = 40;
-  //     this.src="assets/red.png"
-  //     refreshGame();
-  //   } else {
-  //     width = 20;
-  //     this.src="assets/green.png"
-  //     refreshGame();
-  //   }
-  //   console.log(width);
-  // });
+  document.querySelector("#size").addEventListener("click", function() {
+    if (width == 20) {
+      width = 30;
+      gridCellCount = width * width;
+      this.src="assets/medium.png";
+      refreshGame();
+    } else if (width == 30) {
+      width = 40;
+      gridCellCount = width * width;
+      this.src="assets/hard.png"
+      refreshGame();
+    } else {
+      width = 20;
+      gridCellCount = width * width;
+      this.src="assets/easy.png"
+      refreshGame();
+    }
+    console.log(width);
+  });
 
 
   // EVENT LISTENER FUNCTIONS - OTHER
@@ -397,7 +402,7 @@ function init() {
     }
   }
   // Starting the intervals
-    const runGame = setInterval(nextInterval, 200);
+    let runGame = setInterval(nextInterval, 200);
 }
 
 document.addEventListener('DOMContentLoaded', init)
@@ -436,7 +441,6 @@ document.addEventListener('DOMContentLoaded', init)
 // - DRY the code
 
 // QUESTIONS
-// - bug: only if reset button has been paused, the winning/losing screen keeps displaying (we're stuck in the new setInterval)
 
 // LATEST UPDATE
-// changed the reset function so it doesn't refresh the whole page and added the start of a gameboard size button
+// fixed the reset function therefore also the gameboard size button
