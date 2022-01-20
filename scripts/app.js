@@ -93,7 +93,34 @@ function init() {
   // EVENT LISTENER FUNCTIONS - BUTTONS
 
   // Checking if refresh has been hit
-  document.querySelector("#reset").addEventListener("click", () => location.reload());
+  // document.querySelector("#reset").addEventListener("click", () => location.reload());
+  document.querySelector("#reset").addEventListener("click", function refreshGame() {
+    //cancel interval
+    clearInterval(runGame);
+    //reset variables
+    tubePosition = gridCellCount - (width/2);
+    for (i=0; i<10; i++) {
+      bullets[i] = gridCellCount;
+    }
+    enemies = [];
+    currentBullet = 0;
+    velocity = 0;
+    shootThisTurn = 0;
+    moveLeft = true;
+    won = false;
+    lost = false;
+    pauseClicked = false;
+    for (i=0; i<gridCellCount; i++) {
+      cells.pop();
+      document.querySelector(".grid > div").remove();
+    }
+    //re-run functions
+    createGrid();
+    cells[tubePosition].classList.add("tube");
+    createEnemies();
+    //restart interval
+    setInterval(nextInterval, 200);
+  });
 
   // Checking if pause button has been hit
   document.querySelector("#pause").addEventListener("click", () => pauseClicked = !pauseClicked);
@@ -107,7 +134,24 @@ function init() {
     } else {
       backgroundMusic.pause();
     }
-  })
+  });
+
+  // document.querySelector("#size").addEventListener("click", function() {
+  //   if (width == 20) {
+  //     width = 30;
+  //     this.src="assets/orange.png";
+  //     refreshGame();
+  //   } else if (width == 30) {
+  //     width = 40;
+  //     this.src="assets/red.png"
+  //     refreshGame();
+  //   } else {
+  //     width = 20;
+  //     this.src="assets/green.png"
+  //     refreshGame();
+  //   }
+  //   console.log(width);
+  // });
 
 
   // EVENT LISTENER FUNCTIONS - OTHER
@@ -380,17 +424,19 @@ document.addEventListener('DOMContentLoaded', init)
 // - stop the page from moving/scrolling
 // - add music to the game
 // - add a mute button
+// - add sound effects
+// - change the reset function not to refresh the whole page
 
 // TO-DO
-// - change the reset function not to refresh the whole page
-// - add sound effects
+// - change the mute button to affect all sounds, not just background music
 // - add settings for board size and game speed
+// - check goombas array doesn't contain isDead any more
 // - create notification that no more bullets are left
 // - add scoring
 // - DRY the code
 
 // QUESTIONS
-
+// - bug: only if reset button has been paused, the winning/losing screen keeps displaying (we're stuck in the new setInterval)
 
 // LATEST UPDATE
-// added winning and losing music and bullet fired and hit sounds
+// changed the reset function so it doesn't refresh the whole page and added the start of a gameboard size button
