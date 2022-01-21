@@ -2,9 +2,10 @@ function init() {
 
   //VARIABLES
 
-  let width =  30;        // change this value to the appropriate width: 20, 30 or 40
+  let width =  20;        // change this value to the appropriate width: 20, 30 or 40
   let gridCellCount = width * width;
   let cells = [];
+  let speed = 200;
 
   // constant variables
   const grid = document.querySelector(".grid");
@@ -120,7 +121,7 @@ function init() {
     cells[tubePosition].classList.add("tube");
     createEnemies();
     //restart interval
-    runGame = setInterval(nextInterval, 200);
+    runGame = setInterval(nextInterval, speed);
   }
   document.querySelector("#reset").addEventListener("click", refreshGame);
 
@@ -138,19 +139,22 @@ function init() {
     }
   });
 
-  document.querySelector("#size").addEventListener("click", function() {
+  document.querySelector("#difficulty").addEventListener("click", function() {
     if (width == 20) {
       width = 30;
+      speed = 150;
       gridCellCount = width * width;
       this.src="assets/medium.png";
       refreshGame();
     } else if (width == 30) {
       width = 40;
+      speed = 100;
       gridCellCount = width * width;
       this.src="assets/hard.png"
       refreshGame();
     } else {
       width = 20;
+      speed = 200;
       gridCellCount = width * width;
       this.src="assets/easy.png"
       refreshGame();
@@ -431,11 +435,11 @@ document.addEventListener('DOMContentLoaded', init)
 // - add a mute button
 // - add sound effects
 // - change the reset function not to refresh the whole page
+// - add settings for board size
+// - added changing the game speed when difficulty changes
 
 // TO-DO
 // - change the mute button to affect all sounds, not just background music
-// - add settings for board size and game speed
-// - check goombas array doesn't contain isDead any more
 // - create notification that no more bullets are left
 // - add scoring
 // - DRY the code
@@ -443,4 +447,4 @@ document.addEventListener('DOMContentLoaded', init)
 // QUESTIONS
 
 // LATEST UPDATE
-// fixed the reset function therefore also the gameboard size button
+// included speed in difficulty
