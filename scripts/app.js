@@ -97,6 +97,15 @@ function init() {
     //cancel interval
     clearInterval(runGame);
     //reset variables
+    won = false;
+    lost = false;
+    document.querySelector("body").lastChild.remove();
+    document.querySelector(".grid-wrapper").style.display = "flex";
+    document.querySelector(".grid-wrapper").style.justifyContent = "center";
+    if (musicOn) {
+      winningMusic.pause();
+      backgroundMusic.play();
+    }
     tubePosition = gridCellCount - (width/2);
     for (i=0; i<10; i++) {
       bullets[i] = gridCellCount;
@@ -106,8 +115,6 @@ function init() {
     velocity = 0;
     shootThisTurn = 0;
     moveLeft = true;
-    won = false;
-    lost = false;
     pauseClicked = false;
     cells = [];
     document.querySelectorAll(".grid > div").forEach(
@@ -447,9 +454,9 @@ document.addEventListener('DOMContentLoaded', init)
 // - add settings for board size
 // - added changing the game speed when difficulty changes
 // - change the mute button to affect all sounds, not just background music
+// - fix reset to work when game has been won or lost
 
 // TO-DO
-
 // - create notification that no more bullets are left
 // - add scoring
 // - DRY the code
@@ -457,4 +464,4 @@ document.addEventListener('DOMContentLoaded', init)
 // QUESTIONS
 
 // LATEST UPDATE
-// - change the mute button to affect all sounds, not just background music
+// - fixed reset to work when game has been won or lost
