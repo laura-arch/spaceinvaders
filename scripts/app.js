@@ -455,6 +455,7 @@ document.addEventListener('DOMContentLoaded', init)
 // - added changing the game speed when difficulty changes
 // - change the mute button to affect all sounds, not just background music
 // - fix reset to work when game has been won or lost
+// - added media queries to the CSS so it can be played on smaller screens
 
 // TO-DO
 // - create notification that no more bullets are left
@@ -464,4 +465,4 @@ document.addEventListener('DOMContentLoaded', init)
 // QUESTIONS
 
 // LATEST UPDATE
-// - fixed reset to work when game has been won or lost
+// - added media queries to the CSS so it can be played on smaller screens

@@ -30,6 +30,20 @@ h1 {
   width: 600px;
 }
 
+@media only screen and (max-height: 700px) {
+  .grid {
+    height: 400px;
+    width: 400px;
+  }
+}
+
+@media only screen and (max-height: 600px) {
+  .grid {
+    height: 300px;
+    width: 300px;
+  }
+}
+
 .grid div {
   border: 1px solid lightgrey;
   flex-grow: 1;
